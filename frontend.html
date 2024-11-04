@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emotorad Identity Reconciliation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #4CAF50, #2E7D32);
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      width: 700px;
+      padding: 30px;
+      border-radius: 10px;
+      background-color: #ffffff;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .form-container {
+      flex: 1;
+      padding-right: 20px;
+    }
+    h2 {
+      color: #2E7D32;
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin: 8px 0 5px;
+      color: #333;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus, input[type="email"]:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #2E7D32;
+    }
+    .result {
+      margin-top: 15px;
+      padding: 12px;
+      background-color: #e8f5e9;
+      border-left: 5px solid #4CAF50;
+      border-radius: 5px;
+      color: #333;
+    }
+    .sample-emails {
+      width: 220px;
+      margin-left: 20px;
+      padding: 15px;
+      background-color: #f1f8e9;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      overflow-wrap: break-word;
+    }
+    .sample-emails h3 {
+      color: #4CAF50;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    pre {
+      font-size: 14px;
+      color: #555;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="form-container">
+    <h2>Identify User</h2>
+    <form id="identifyForm">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="text" id="phoneNumber" name="phoneNumber" required>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="result" class="result" style="display:none;"></div>
+  </div>
+
+  <div class="sample-emails">
+    <h3>Sample Orders</h3>
+    <pre>
+{
+  "sampleContacts": [
+    { "email": "doc.timetravel@zmail.com", "phoneNumber": "555-0101" },
+    { "email": "the.real.doc@zmail.com", "phoneNumber": "555-0101" },
+    { "email": "scientist42@zmail.com", "phoneNumber": "555-0202" },
+    { "email": "doc.timetravel@zmail.com", "phoneNumber": "555-0202" }
+  ]
+}
+    </pre>
+  </div>
+</div>
+
+<script>
+  document.getElementById('identifyForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const resultDiv = document.getElementById('result');
+
+    try {
+      const response = await fetch('http://localhost:3000/identify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, phoneNumber })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+          <strong>Response:</strong>
+          <p>Primary Contact ID: ${result.primaryContactId}</p>
+          <p>Emails: ${result.emails.join(', ')}</p>
+          <p>Phone Numbers: ${result.phoneNumbers.join(', ')}</p>
+          <p>Secondary Contact IDs: ${result.secondaryContactIds.join(', ')}</p>
+        `;
+      } else {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `<strong>Error:</strong> Unable to process the request. Status Code: ${response.status}`;
+      }
+    } catch (error) {
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+    }
+  });
+</script>
+
+</body>
+</html>
