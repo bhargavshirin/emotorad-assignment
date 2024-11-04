@@ -21,12 +21,13 @@ This service is designed to handle identity reconciliation by managing contacts 
 # for installing dependencies 
 ```bash
 npm install
+```
 
 # Create a .env file in the project root and add your MongoDB connection URI:
 
 ```bash
 DB_URI=your_mongodb_uri
-
+```
 # For frontend
 
 to run the frontend.html file u can use the Live Server Extension
@@ -37,7 +38,7 @@ run the command
 
 ```bash
 node server.js
-
+```
 
 ### Prerequisites
 
