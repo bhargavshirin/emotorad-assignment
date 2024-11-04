@@ -32,6 +32,9 @@ DB_URI=your_mongodb_uri
 # For frontend
 
 to run the frontend.html file u can use the Live Server Extension
+<img width="1428" alt="Screenshot 2024-11-05 at 5 17 23 AM" src="https://github.com/user-attachments/assets/2a7046f6-c87e-465e-a832-c837bee386a2">
+
+
 
 # For Backend
 
