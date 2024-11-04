@@ -1,6 +1,7 @@
 
-## Backend Developer Intern
+
 # Contact Identity Reconciliation Service
+## Backend Developer Intern
 
 This service is designed to handle identity reconciliation by managing contacts based on their email addresses and phone numbers. The `/identify` endpoint allows for identifying, creating, and linking contacts based on these attributes.
 
