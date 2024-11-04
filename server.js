@@ -1,3 +1,4 @@
+//all the libraries and packages
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -13,18 +14,28 @@ if (!dbURI) {
   console.error("Error: DB_URI not set in environment variables");
   process.exit(1);
 }
-
+// post request in /identify route
 app.post('/identify', async (req, res) => {
+
+   //mail and phoneNumber from the request body
     const { email, phoneNumber } = req.body;
+
+   // Validate that at least one of email or phoneNumber is provided
     if (!email && !phoneNumber) {
       return res.status(400).json({ error: "Email or phone number is required" });
     }
+
+    // Validate that email, if provided, is a string
     if (email && typeof email !== "string") {
       return res.status(400).json({ error: "Email must be a string" });
     }
+
+    // Validate that phoneNumber, if provided, is a string
     if (phoneNumber && typeof phoneNumber !== "string") {
       return res.status(400).json({ error: "Phone number must be a string" });
     }
+
+    // Check if the email has a valid format using a regular expression
     if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
       return res.status(400).json({ error: "Invalid email format" });
     }
@@ -35,13 +46,13 @@ app.post('/identify', async (req, res) => {
         $or : [{ email }, { phoneNumber }]
       });
 
-      // Check for existing contact with the same email and phone number
+      // Check if there's already a contact with the same email and phone number
       const existingContact = matches.find(contact => contact.email === email && contact.phoneNumber === phoneNumber);
       if (existingContact) {
         return res.status(409).json({ error: "A contact with the same email and phone number already exists." });
       }
   
-      // If no matches are found, create a new primary contact
+      // If no matches are found, we will create a new primary contact
       if (matches.length === 0) {
         const newContact = await Contact.create({ email, phoneNumber, linkPrecedence: "primary" });
         return res.status(200).json({
@@ -52,7 +63,7 @@ app.post('/identify', async (req, res) => {
         });
       }
   
-      // Set to store unique emails and phone numbers
+      // Set to store unique emails and phone numbers for no duplicates
       let emailList = new Set([email]);
       let phoneList = new Set([phoneNumber]);
       let secondaryIds = [];
@@ -64,7 +75,7 @@ app.post('/identify', async (req, res) => {
         await primaryContact.updateOne({ linkPrecedence: "primary" });
       }
   
-      // Populate email, phone, and secondary IDs lists
+      // data in email, phone, and secondary IDs lists
       matches.forEach(contact => {
         if (contact.email) emailList.add(contact.email);
         if (contact.phoneNumber) phoneList.add(contact.phoneNumber);
