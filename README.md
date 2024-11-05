@@ -50,6 +50,10 @@ node server.js
 - [MongoDB](https://www.mongodb.com/) (local or cloud instance)
 - [npm](https://www.npmjs.com/) (Node Package Manager)
 
+## Testing
+
+for testing i have used the postman 
+
 
 
 
